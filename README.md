@@ -34,3 +34,18 @@ docker compose down -v
 ```bash
 docker volume rm seminariophp
 ```
+
+## Instalacion de Librerias externas
+
+Instalar las siguientes librerias dentro de slim:
+vlucas/phpdotenv
+Instalado para utilizar las env variables para hacer la conexion a la db usando .env.dist
+```bash
+composer require vlucas/phpdotenv
+```
+
+JWT 
+Instalado para trabajar con JSON web Tokens, el cual es un estandar para la creacion de tokens seguros el cual es verificado por el servidor y asegura que el usuario tiene permisos para realizar acciones.
+```bash
+ composer require firebase/php-jwt
+```
