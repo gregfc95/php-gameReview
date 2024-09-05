@@ -6,8 +6,8 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/vendor/autoload.php';
-require_once 'pdo.php';
-require_once 'jwt.php';
+require 'pdo.php';
+require 'jwt.php';
 
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
