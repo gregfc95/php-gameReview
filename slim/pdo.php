@@ -1,9 +1,8 @@
 <?php
 require 'vendor/autoload.php'; // Make sure to include this to load Composer dependencies
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+//fetch .env
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));//load dotenv
 $dotenv->load();
-
-
 // pdo instance and attributes
 try {
     $pdo = new PDO(
