@@ -43,6 +43,6 @@ $app->post('/usuario', function(Request $request, Response $response) use($pdo){
 
 
 
-})
+});
 
 $app->run();
