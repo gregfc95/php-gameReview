@@ -36,7 +36,7 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
             return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
         }
 
-        // Llamar a la función que ya tienes para generar el token JWT
+        // Llamar a la función que ya tienes para generar el token
         $token = generarToken($user['id']); 
 
         // Actualizar la base de datos con el token y su fecha de vencimiento
@@ -60,6 +60,12 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
 $app->post('/register',function(Request $request, Response $response) use($pdo){
 
     $data = $request->getParsedBody();
+    //Implementar nombre de usuario mayor a 6 caracteres y menor a 20, unicamente alfanumericos
+
+    //Implmentar verificar nombre en uso
+
+    //Implementar la clave tenga por lo menos 8 caracteres y que tenga mayúsculas, minúsculas, números y caracteres especiales.
+
 
    // Validación básica: Verificar que los campos estén presentes
    if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
