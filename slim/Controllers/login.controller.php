@@ -4,11 +4,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
+//Traer PDO
+$pdo = require_once __DIR__ . '/../config/connect.db.php';
+
+
 $app = AppFactory::create();
-$app->addBodyParsingMiddleware();
-$app->addRoutingMiddleware();
-$app->addRoutingMiddleware();
-$app->addErrorMiddleware(true, true, true);
 
 //route login 
 $app->post('/login',function(Request $request, Response $response) use($pdo){
@@ -60,34 +60,51 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
 $app->post('/register',function(Request $request, Response $response) use($pdo){
 
     $data = $request->getParsedBody();
-    //Implementar nombre de usuario mayor a 6 caracteres y menor a 20, unicamente alfanumericos
-
-    //Implmentar verificar nombre en uso
-
-    //Implementar la clave tenga por lo menos 8 caracteres y que tenga mayúsculas, minúsculas, números y caracteres especiales.
-
-
-   // Validación básica: Verificar que los campos estén presentes
-   if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
-    $response->getBody()->write(json_encode(['error' => 'Faltan datos']));
-    return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
-}
-
-    $username = $data['nombre_usuario'];
-    $password = password_hash($data['clave'], PASSWORD_BCRYPT);
+    $username = $data['nombre_usuario'] ?? '';
+    $password = $data['clave'] ?? '';
+    
+     
+    // Validación básica: Verificar que los campos estén presentes
+    if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
+        $response->getBody()->write(json_encode(['error' => 'Faltan datos']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    }
+    
+    // 1. Validar nombre de usuario: alfanumérico, entre 6 y 20 caracteres
+    if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $username)) {
+        $response->getBody()->write(json_encode(['error' => 'El nombre de usuario debe tener entre 6 y 20 caracteres y solo puede contener caracteres alfanuméricos.']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    }
+    // 3. Validar la clave: mínimo 8 caracteres, mayúsculas, minúsculas, números y caracteres especiales
+    if (!preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/', $password)) {
+        $response->getBody()->write(json_encode(['error' => 'La contraseña debe tener al menos 8 caracteres, con mayúsculas, minúsculas, números y caracteres especiales.']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    }
 
     try {
-        // Insertar el usuario en la base de datos
-        $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)");
-        
-        if ($stmt->execute([$username,$password])){
-            // Si todo sale bien, devolver estado 201 (Created)
-            $response->getBody()->write(json_encode(['status' => 'Usuario creado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+        // 2. Verificar si el nombre de usuario ya está en uso
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE nombre_usuario = ?");
+        $stmt->execute([$username]);
+        $usernameExists = $stmt->fetchColumn();
+    
+        if ($usernameExists) {
+            $response->getBody()->write(json_encode(['error' => 'El nombre de usuario ya está en uso.']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
         }
+         // Encriptar la clave
+          $hashedPassword = password_hash($password, PASSWORD_BCRYPT);  
 
+           // Insertar el nuevo usuario
+           $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)");
+           $stmt->execute([$username, $hashedPassword]);
+                    
+           // Respuesta exitosa
+          $response->getBody()->write(json_encode(['status' => 'Usuario creado con éxito']));
+          return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+
+        
     } catch (PDOException $e) {
-       // Si hay un error con la consulta, devolver estado 500 (Internal Server Error)
+        // Si hay un error con la consulta, devolver estado 500 (Internal Server Error)
        $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
    }

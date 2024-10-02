@@ -5,6 +5,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/vendor/autoload.php';
+//Conexion DB
+require '/config/connect.db.php';
+//Endpoints
+require 'controllers/calificaciones.controller.php';
+require 'controllers/juegos.controller.php';
+require 'controllers/login.controller.php';
+require 'controllers/usuarios.controller.php';
+
 
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
@@ -22,27 +30,5 @@ $app->add( function ($request, $handler) {
     ;
 });
 
-// ACÁ VAN LOS ENDPOINTS
-/* Usuarios
-● POST /usuario: Crear un nuevo usuario.
-● PUT /usuario/{id}: Editar un usuario existente.
-● DELETE /usuario/{id}: Eliminar un usuario.
-● GET /usuario/{id}: Obtener información de un usuario específico.
-○ En los últimos 3 casos (donde se recibe el id) se debe validar que el
-usuario se haya logueado */
-
-//Usuarios
-$app->post('/usuario', function(Request $request, Response $response) use($pdo){
-    $data = $request ->getParsedBody();
-    $username = $data['nombre_usuario'];
-    $password = password_hash($data['clave'],PASSWORD_DEFAULT);
-
-    $stmt = $pdo->prepare('SELECT * FROM usuario WHERE nombre_usuario = ?');
-    $stmt-> execute([$username]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
-
-});
 
 $app->run();

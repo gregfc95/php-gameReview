@@ -3,7 +3,10 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-require_once __DIR__ . '/../Middleware/auth.middleware.php';
+
+//Traer PDO
+$pdo = require_once __DIR__ . '/../config/connect.db.php';
+require_once __DIR__ . '/../middleware/auth.middleware.php';
 
 $app = AppFactory::create();
 

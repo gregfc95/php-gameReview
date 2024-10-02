@@ -4,6 +4,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
+require_once __DIR__ . '/../middleware/auth.middleware.php';
+require_once __DIR__ . '/../middleware/admin.middleware.php';
+//Traer PDO
+$pdo = require_once __DIR__ . '/../config/connect.db.php';
+
 $app = AppFactory::create();
 
 // POST /calificacion: Crear una nueva calificación
