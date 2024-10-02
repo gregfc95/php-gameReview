@@ -1,6 +1,4 @@
 <?php
-
-
 function generarToken($userId) {
     $fecha = date('Y-m-d H:i:s'); // Fecha actual
     $key = $_ENV['JWT_SECRET'];  // Llave secreta
