@@ -6,16 +6,21 @@ use Slim\Factory\AppFactory;
 
 //Traer PDO
 $pdo = require_once __DIR__ . '/../config/connect.db.php';
-require_once __DIR__ . '/../middleware/auth.middleware.php';
+
+//Comprobar PDO
+$responseCheck = checkDatabaseConnection($pdo, $response);
+if ($responseCheck) {
+    return $responseCheck;
+}
+
+//MiddleWare
+require_once __DIR__ . '/../middle/auth.middleware.php';
 
 $app = AppFactory::create();
-
 //Crear Usuario POST
 $app->post('/usuario',function(Request $request, Response $response) use($pdo){
-
     $data = $request->getParsedBody();
-
-   $username = $data['nombre_usuario'];
+    $username = $data['nombre_usuario'];
 
     try {
         // Insertar el usuario en la base de datos
@@ -66,7 +71,7 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
       $response->getBody()->write(json_encode(['error' => 'Error al actualizar el usuario']));
       return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
   }
-})->add($authMiddleware); // Añadir el middleware de autenticación
+});//->add($authMiddleware); // Añadir el middleware de autenticación
 
 
 
@@ -95,7 +100,7 @@ $app->delete('/usuario/{id}',function(Request $request, Response $response, arra
         $response->getBody()->write(json_encode(['error' => 'Error al eliminar el usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
-})->add($authMiddleware); // Añadir el middleware de autenticación
+});//->add($authMiddleware); // Añadir el middleware de autenticación
 
 
 
@@ -120,4 +125,4 @@ $app->get('/usuario/{id}',function(Request $request, Response $response, array $
         $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
     }
-})->add($authMiddleware);
+});//->add($authMiddleware);

@@ -2,17 +2,20 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
 
 //Traer PDO
 $pdo = require_once __DIR__ . '/../config/connect.db.php';
-
-
-$app = AppFactory::create();
+require_once __DIR__ . '/../config/helpers/pdo.helper.php';
 
 //route login 
 $app->post('/login',function(Request $request, Response $response) use($pdo){
     $data = $request->getParsedBody();
+
+    //Comprobar PDO
+    $responseCheck = checkDatabaseConnection($pdo, $response);
+    if ($responseCheck) {
+        return $responseCheck;
+    }
 
    // Validación básica: Verificar que los campos estén presentes
    if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
@@ -31,7 +34,7 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
 
         // Si el usuario no existe o la contraseña no es correcta, devolver 401 Unauthorized
         if (!$user || !password_verify($password, $user['clave'])) {
-            $response->getBody()->write(json_encode(['error' => 'Credenciales inválidas']));
+            $response->getBody()->write(json_encode(['error' => 'Credenciales invalidas']));
         
             return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
         }
@@ -55,8 +58,7 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
 });
 
 
-
-//Registro
+/* //Registro
 $app->post('/register',function(Request $request, Response $response) use($pdo){
 
     $data = $request->getParsedBody();
@@ -108,6 +110,4 @@ $app->post('/register',function(Request $request, Response $response) use($pdo){
        $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
    }
-});
-
-$app->run();
+}); */

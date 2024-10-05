@@ -1,28 +1,24 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/vendor/autoload.php';
 
-//Conexion DB
-require __DIR__ . '/config/connect.db.php';
-//Endpoints (Controllers)
-require __DIR__ . '/controllers/calificaciones.controller.php';
-require __DIR__ . '/controllers/juegos.controller.php';
-require __DIR__ . '/controllers/login.controller.php';
-require __DIR__ . '/controllers/usuarios.controller.php';
-
-
 // Create App
 $app = AppFactory::create();
-$app->addBodyParsingMiddleware(); // Middleware for JSON body parsing
-$app->addRoutingMiddleware();     // Routing Middleware
+$app->setBasePath('/php-gameReview/slim');
 
 
+$app->addBodyParsingMiddleware();   // Middleware for JSON body parsing
+$app->addRoutingMiddleware();   // Routing Middleware
+
+$app->addErrorMiddleware(true, true, true); // Error Middleware 
 
 // CORS Middleware
-$app->add(function (Request $request, $handler) {
+/* $app->add(function (Request $request, $handler) {
     $response = $handler->handle($request);
 
     return $response
@@ -30,11 +26,16 @@ $app->add(function (Request $request, $handler) {
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
         ->withHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE')
         ->withHeader('Content-Type', 'application/json');
-});
+}); */
 
-// Error Middleware 
-$app->addErrorMiddleware(true, true, true);
+//Endpoints (Controllers)
+//require __DIR__ . '/controllers/calificaciones.controller.php';
+//require __DIR__ . '/controllers/juegos.controller.php';
+require __DIR__ . '/controllers/login.controller.php';
+//require __DIR__ . '/controllers/usuarios.controller.php';
 
+//Tests
+require __DIR__ . '/tests/test.controller.php';
 
 //Correr App
 $app->run();

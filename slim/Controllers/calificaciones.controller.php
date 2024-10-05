@@ -4,10 +4,18 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
-require_once __DIR__ . '/../middleware/auth.middleware.php';
-require_once __DIR__ . '/../middleware/admin.middleware.php';
 //Traer PDO
 $pdo = require_once __DIR__ . '/../config/connect.db.php';
+
+//Comprobar PDO
+$responseCheck = checkDatabaseConnection($pdo, $response);
+if ($responseCheck) {
+    return $responseCheck;
+}
+
+//Middleware
+require_once __DIR__ . '/../middle/auth.middleware.php';
+require_once __DIR__ . '/../middle/admin.middleware.php';
 
 $app = AppFactory::create();
 
@@ -28,7 +36,7 @@ $app->post('/calificacion', function (Request $request, Response $response) use 
     $response->getBody()->write(json_encode(['status' => 'Calificación creada']));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
 
-})->add($authMiddleware);  // Añadir el middleware de autenticación
+});//->add($authMiddleware);  // Añadir el middleware de autenticación
 
 // PUT /calificacion/{id}: Editar una calificación existente
 $app->put('/calificacion/{id}', function (Request $request, Response $response, array $args) use ($pdo) {
@@ -58,7 +66,7 @@ $app->put('/calificacion/{id}', function (Request $request, Response $response, 
     $response->getBody()->write(json_encode(['status' => 'Calificación actualizada']));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 
-})->add($authMiddleware);  // Añadir el middleware de autenticación
+});//->add($authMiddleware);  // Añadir el middleware de autenticación
 
 
 //Borrar calificacion Delete
@@ -87,4 +95,4 @@ $app->delete('/calificacion/{id}', function (Request $request, Response $respons
     $response->getBody()->write(json_encode(['status' => 'Calificación eliminada']));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 
-})->add($authMiddleware);  // Añadir el middleware de autenticación
+});//->add($authMiddleware);  // Añadir el middleware de autenticación

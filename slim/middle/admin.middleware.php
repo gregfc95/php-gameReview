@@ -1,4 +1,5 @@
 <?php
+$pdo = require_once __DIR__ . '/../config/connect.db.php';
 
 // Middleware para verificar si es administrador
 $adminMiddleware = function ($request, $handler) use ($pdo) {
