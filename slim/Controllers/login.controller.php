@@ -2,11 +2,10 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Helpers\ValidationHelper; 
+
 //Traer PDO
 $pdo = require_once __DIR__ . '/../config/connect.db.php';
-require_once __DIR__ . '/../helpers/pdo.helper.php';
-
+require_once __DIR__ . '/../config/helpers/pdo.helper.php';
 
 //route login 
 $app->post('/login',function(Request $request, Response $response) use($pdo){
@@ -17,11 +16,12 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
     if ($responseCheck) {
         return $responseCheck;
     }
-    //verificar que los campos estén presentes
-    $validationResponse = ValidationHelper::validateCredentials($data, $response);
-    if ($validationResponse) {
-        return $validationResponse;
-    }
+
+   // Validación básica: Verificar que los campos estén presentes
+   if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
+    $response->getBody()->write(json_encode(['error' => 'Faltan datos']));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+}
 
     $username = $data['nombre_usuario'];
     $password = $data['clave'];
@@ -58,7 +58,7 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
 });
 
 
-//Registro
+/* //Registro
 $app->post('/register',function(Request $request, Response $response) use($pdo){
 
     $data = $request->getParsedBody();
@@ -66,10 +66,10 @@ $app->post('/register',function(Request $request, Response $response) use($pdo){
     $password = $data['clave'] ?? '';
     
      
-    //verificar que los campos estén presentes
-    $validationResponse = ValidationHelper::validateCredentials($data, $response);
-    if ($validationResponse) {
-        return $validationResponse;
+    // Validación básica: Verificar que los campos estén presentes
+    if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
+        $response->getBody()->write(json_encode(['error' => 'Faltan datos']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
     
     // 1. Validar nombre de usuario: alfanumérico, entre 6 y 20 caracteres
@@ -110,4 +110,4 @@ $app->post('/register',function(Request $request, Response $response) use($pdo){
        $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
    }
-});
+}); */
