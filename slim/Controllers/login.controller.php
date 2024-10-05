@@ -5,8 +5,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 //Traer PDO
 $pdo = require_once __DIR__ . '/../config/connect.db.php';
-require_once __DIR__ . '/../config/helpers/pdo.helper.php';
+require_once __DIR__ . '/../helpers/pdo.helper.php';
+require __DIR__ . '/../config/token.php';
 
+//require_once __DIR__ . '/../middle/validation.middleware.php';
 //route login 
 $app->post('/login',function(Request $request, Response $response) use($pdo){
     $data = $request->getParsedBody();
@@ -17,11 +19,12 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
         return $responseCheck;
     }
 
-   // Validación básica: Verificar que los campos estén presentes
+  // Validación básica: Verificar que los campos estén presentes
+   //Refactor en un helper o middleware
    if (!isset($data['nombre_usuario']) || !isset($data['clave'])) {
     $response->getBody()->write(json_encode(['error' => 'Faltan datos']));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
-}
+    }
 
     $username = $data['nombre_usuario'];
     $password = $data['clave'];
@@ -30,15 +33,13 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
         // Buscar el usuario en la base de datos
         $stmt = $pdo->prepare("SELECT * FROM usuario WHERE nombre_usuario = ?");
         $stmt->execute([$username]);
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Si el usuario no existe o la contraseña no es correcta, devolver 401 Unauthorized
-        if (!$user || !password_verify($password, $user['clave'])) {
+         // Si el usuario no existe o la contraseña no es correcta, devolver 401 Unauthorized
+         if (!$user || substr(md5($password), 0, 16) !== $user['clave']) {
             $response->getBody()->write(json_encode(['error' => 'Credenciales invalidas']));
-        
             return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-        }
-
+        } 
         // Llamar a la función que ya tienes para generar el token
         $token = generarToken($user['id']); 
 
@@ -55,10 +56,10 @@ $app->post('/login',function(Request $request, Response $response) use($pdo){
         $response->getBody()->write(json_encode(['error' => 'Error de base de datos', 'details' => $e->getMessage()]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
-});
+});//->add('validationMiddleware');
 
 
-/* //Registro
+//Registro
 $app->post('/register',function(Request $request, Response $response) use($pdo){
 
     $data = $request->getParsedBody();
@@ -93,8 +94,8 @@ $app->post('/register',function(Request $request, Response $response) use($pdo){
             $response->getBody()->write(json_encode(['error' => 'El nombre de usuario ya está en uso.']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
         }
-         // Encriptar la clave
-          $hashedPassword = password_hash($password, PASSWORD_BCRYPT);  
+         // Encriptar la clave forzado a 16 caracteres
+         $hashedPassword = substr(md5($password), 0, 16);
 
            // Insertar el nuevo usuario
            $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)");
@@ -110,4 +111,4 @@ $app->post('/register',function(Request $request, Response $response) use($pdo){
        $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
    }
-}); */
+});//->add('validationMiddleware');
