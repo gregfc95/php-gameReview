@@ -1,24 +1,3 @@
-# PHP Game Review API
-
-Proyecto para Seminario de PHP de la UNLP, RESTful API construido usando Slim Framework
-
-## Tabla de contenidos
-
-- [Features](#features)
-- [Tecnologías](#tecnologías)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [API Endpoints](#api-endpoints)
-- [Error Handling](#error-handling)
-
-## Features
-
-- API RESTful para revisiones de juegos
-- Operaciones CRUD para gestionar datos de juegos
-- Interfaz sencilla y fácil de usar
-- Manejo de errores y gestión de respuestas
-- Admite CORS para solicitudes de origen cruzado
-
 ## Tecnologías
 
 - PHP 8.x
