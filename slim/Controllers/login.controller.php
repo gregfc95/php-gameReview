@@ -84,7 +84,7 @@ $app->post('/register', function (Request $request, Response $response) use ($pd
 
         // Respuesta exitosa
         $response->getBody()->write(json_encode(['status' => 'Usuario creado con exito']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } catch (PDOException $e) {
         // Si hay un error con la consulta, devolver estado 500 (Internal Server Error)
         $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));

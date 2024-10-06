@@ -34,7 +34,7 @@ $app->post('/usuario', function (Request $request, Response $response) use ($pdo
        
         // Respuesta exitosa
         $response->getBody()->write(json_encode(['status' => 'Usuario creado con exito']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } catch (PDOException $e) {
         // Si hay un error con la consulta, devolver estado 500 (Internal Server Error)
         $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
@@ -53,7 +53,7 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
 
     if ($authenticatedUser['id'] != $id) {
         $response->getBody()->write(json_encode(['error' => 'No autorizado para modificar este usuario']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
 
     // Obtener los datos enviados en el cuerpo de la solicitud
@@ -91,7 +91,7 @@ $app->delete('/usuario/{id}',function(Request $request, Response $response, arra
     // Verificar si el usuario autenticado tiene permiso para eliminar
     if ($authenticatedUser['id'] != $id) {
         $response->getBody()->write(json_encode(['error' => 'No autorizado para eliminar este usuario']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
 
     // Preparar la consulta para eliminar el usuario
