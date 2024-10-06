@@ -70,6 +70,7 @@ Puedes probar la API con herramientas como Postman o curl. La API admite varios 
 | PUT    | /usuario/{id}    | Permite Editar tu propio usuario         |
 | DELETE | /usuario/{id}    | Permite Borrar tu propio usuario        |
 | GET | /usuario/{id}    | Retorna el JSON de tu propio usuario        |
+| GET | /juego/{id}    | Retorna el JSON de un juego       |
 
 
 ## Error Handling
