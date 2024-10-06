@@ -115,6 +115,12 @@ $app->get('/usuario/{id}', function (Request $request, Response $response, array
 
     // Obtener el usuario autenticado desde el middleware
     $user = $request->getAttribute('user');
+    $userId = $user['id']; //extraer el userId
+
+        // Verificar si el usuario autenticado es el mismo que el usuario
+    if ($userId != $id) {
+            return createErrorResponse(401, 'No autorizado');
+    }
 
     // Obtener información del usuario por ID
     $stmt = $pdo->prepare("SELECT * FROM usuario WHERE id = ?");
