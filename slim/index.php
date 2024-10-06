@@ -4,8 +4,17 @@ ini_set('display_errors', 1);
 
 
 use Slim\Factory\AppFactory;
+// Traer PDO
+$pdo = require_once __DIR__ . '/config/connect.db.php';
+require_once __DIR__ . '/helpers/pdo.helper.php';
+require __DIR__ . '/config/token.php';
 
+//Load Composer
 require __DIR__ . '/vendor/autoload.php';
+
+//Middleware
+require __DIR__ . '/middleware/token.middleware.php';  // Checkeo de vencimiento
+require __DIR__ . '/middleware/validation.middleware.php';  // validaciones basicas
 
 // Create App
 $app = AppFactory::create();
@@ -32,7 +41,7 @@ $app->addErrorMiddleware(true, true, true); // Error Middleware
 //require __DIR__ . '/controllers/calificaciones.controller.php';
 //require __DIR__ . '/controllers/juegos.controller.php';
 require __DIR__ . '/controllers/login.controller.php';
-//require __DIR__ . '/controllers/usuarios.controller.php';
+require __DIR__ . '/controllers/usuarios.controller.php';
 
 //Tests
 require __DIR__ . '/tests/test.controller.php';
