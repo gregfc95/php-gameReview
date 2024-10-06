@@ -77,7 +77,7 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
         $response->getBody()->write(json_encode(['error' => 'Error al actualizar el usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
-})->add($tokenValidationMiddleware);  // Añadir el middleware de autenticación
+})->add($tokenValidationMiddleware)->add('validateUserInput');  // Añadir el middleware de autenticación
 
 
 
