@@ -4,7 +4,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-// Middleware to validate token and set user in request attribute
+// Middleware para verificar el token
 $tokenValidationMiddleware = function (Request $request, RequestHandler $handler) use ($pdo): Response {
     $authHeader = $request->getHeader('Authorization');
     $token = str_replace('Bearer ', '', $authHeader[0] ?? '');
@@ -15,7 +15,7 @@ $tokenValidationMiddleware = function (Request $request, RequestHandler $handler
         return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
 
-    // Verify the token in the database
+    // Verificar el token
     $stmt = $pdo->prepare("SELECT * FROM usuario WHERE token = ? AND vencimiento_token > NOW()");
     $stmt->execute([$token]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -26,9 +26,9 @@ $tokenValidationMiddleware = function (Request $request, RequestHandler $handler
         return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
 
-    // Attach the user data to the request for use in other routes
+    // Adjuntar user data 
     $request = $request->withAttribute('user', $user);
     
-    // Call the next middleware or route handler
+    // Call next middleware
     return $handler->handle($request);
 };

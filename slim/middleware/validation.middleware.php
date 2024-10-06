@@ -33,7 +33,7 @@ function validateUserInput(ServerRequestInterface $request, RequestHandlerInterf
     return $handler->handle($request);
 }
 
-// Helper function to create error responses
+// Helper para crear una respuesta de error
 function createErrorResponse(int $status, string $message): ResponseInterface {
     $response = new Response();
     $response->getBody()->write(json_encode(['error' => $message]));

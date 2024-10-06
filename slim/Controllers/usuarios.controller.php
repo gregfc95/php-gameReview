@@ -127,4 +127,4 @@ $app->get('/usuario/{id}', function (Request $request, Response $response, array
         $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
     }
-})->add($tokenValidationMiddleware); // Añadir el middleware de autenticación // Añadir el middleware de autenticación
+})->add($tokenValidationMiddleware); // Añadir el middleware de autenticación
