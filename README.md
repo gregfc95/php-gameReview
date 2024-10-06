@@ -87,3 +87,91 @@ La API proporciona respuestas de error en caso de solicitudes no válidas. Los c
 - 404 No encontrado: cuando el recurso solicitado no existe.
 - 401 Unauthorized
 - 500 Error interno del servidor: cuando hay un error del servidor.
+
+
+## API Reference
+
+#### Login 
+
+```http
+  POST /login/
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `none` | `none` | none |
+
+
+
+
+#### Sign Up 
+
+```http
+  POST /register/
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `none` | `none` | none |
+
+nombre_usuario: entre 6 y 20 alfanumerico.
+
+clave: 8 chars, min, mayus, num y carac especiales
+```bash
+{
+    "nombre_usuario": "uservalidation10E",
+    "clave": "Password1234567890!"
+}
+```
+#### Sign Up - Usuarios
+
+```http
+  POST /usuario/
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `none` | `none` | none |
+
+nombre_usuario: entre 6 y 20 alfanumerico.
+
+clave: 8 chars, min, mayus, num y carac especiales
+```bash
+{
+    "nombre_usuario": "uservalidation10E",
+    "clave": "Password1234567890!"
+}
+```
+
+#### Editar - Usuario
+
+```http
+  PUT /usuario/{id}
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+#### Borrar - Usuario
+
+```http
+  DELETE /usuario/{id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+
+#### Retornar - Usuario
+
+```http
+  GET /usuario/{id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+

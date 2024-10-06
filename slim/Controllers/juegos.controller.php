@@ -51,8 +51,8 @@ $app->get('/juegos', function (Request $request, Response $response) use ($pdo) 
 
     // Condiciones para la clasificación
     if ($clasificacion) {
-        $sql .= " AND j.clasificacion_edad IN (:clasificacion)";
-        $params[':clasificacion'] = $clasificacion;
+        $sql .= " AND REPLACE(j.clasificacion_edad, '+', '') = :clasificacion";
+        $params[':clasificacion'] = str_replace('+', '', $clasificacion); // Normalize input
     }
 
     // Condiciones para la plataforma
@@ -249,11 +249,11 @@ $app->delete('/juego/{id}', function (Request $request, Response $response, arra
         $stmt = $pdo->prepare("SELECT * FROM calificacion WHERE juego_id = ?");
         $stmt->execute([$juegoId]);
         $calificaciones = $stmt->fetchAll();
-
         if (!empty($calificaciones)) {
-            return $response->withStatus(409)->withHeader('Content-Type', 'application/json')
-                ->getBody()->write(json_encode(['error' => 'No se puede eliminar un juego con calificaciones']));
+            $response->getBody()->write(json_encode(['error' => 'No se puede eliminar un juego con calificaciones']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(409);
         }
+
 
         // Eliminar el juego
         $stmtDelete = $pdo->prepare("DELETE FROM juego WHERE id = ?");
