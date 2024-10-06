@@ -22,7 +22,7 @@ $tokenValidationMiddleware = function (Request $request, RequestHandler $handler
 
     if (!$user) {
         $response = new \Slim\Psr7\Response();
-        $response->getBody()->write(json_encode(['error' => 'Token inválido o caducado']));
+        $response->getBody()->write(json_encode(['error' => 'Token invalido o caducado']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
 
