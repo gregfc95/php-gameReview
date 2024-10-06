@@ -2,26 +2,14 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+//refactorizar a container
+global $pdo;
 
-
-
-//Traer PDO
-$pdo = require_once __DIR__ . '/../config/connect.db.php';
 require_once __DIR__ . '/../helpers/pdo.helper.php';
+require_once __DIR__ . '/../config/token.php';
 
-//Comprobar PDO
-$responseCheck = checkDatabaseConnection($pdo, $response);
-if ($responseCheck) {
-    return $responseCheck;
-}
 
-//Middleware
-require_once __DIR__ . '/../middle/auth.middleware.php';
-require_once __DIR__ . '/../middle/admin.middleware.php';
-
-$app = AppFactory::create();
-
+/*
 //Obtener juego especifico y lista de calif get 
 // GET /juegos?pagina={pagina}&clasificacion={clasificacion}&texto={texto}&plataforma={plataforma}
 $app->get('/juegos', function (Request $request, Response $response) use ($pdo) {
@@ -90,29 +78,40 @@ $app->get('/juegos', function (Request $request, Response $response) use ($pdo) 
 
     return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 
-});
+}); */
 
 
 $app->get('/juegos/{id}', function (Request $request, Response $response, array $args) use ($pdo) {
     $juegoId = $args['id'];
 
-    // Obtener información del juego
-    $stmt = $pdo->prepare("SELECT * FROM juegos WHERE id = ?");
-    $stmt->execute([$juegoId]);
-    $juego = $stmt->fetch();
+    try {
+        // Obtener información del juego
+        $stmt = $pdo->prepare("SELECT * FROM juego WHERE id = ?");
+        $stmt->execute([$juegoId]);
+        $juego = $stmt->fetch();
 
-    if (!$juego) {
-        return $response->withStatus(404)->withHeader('Content-Type', 'application/json')
-                        ->getBody()->write(json_encode(['error' => 'Juego no encontrado']));
-    }
+        if (!$juego) {
+            return $response->withStatus(404)
+                            ->withHeader('Content-Type', 'application/json')
+                            ->getBody()->write(json_encode(['error' => 'Juego no encontrado']));
+        }
 
     // Obtener calificaciones del juego
-    $stmtCalificaciones = $pdo->prepare("SELECT * FROM calificaciones WHERE juego_id = ?");
+    $stmtCalificaciones = $pdo->prepare("SELECT * FROM calificacion WHERE juego_id = ?");
     $stmtCalificaciones->execute([$juegoId]);
     $calificaciones = $stmtCalificaciones->fetchAll();
 
     $response->getBody()->write(json_encode(['juego' => $juego, 'calificaciones' => $calificaciones]));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+} catch (PDOException $e) {
+    // Log the error message and return a 500 response
+    $response->getBody()->write(json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+} catch (Exception $e) {
+    // Handle other types of exceptions
+    $response->getBody()->write(json_encode(['error' => 'Error inesperado: ' . $e->getMessage()]));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+}
 });
 
 
@@ -121,18 +120,77 @@ $app->get('/juegos/{id}', function (Request $request, Response $response, array 
 //Crear juego post
 
 $app->post('/juego', function (Request $request, Response $response) use ($pdo) {
+   
     $data = $request->getParsedBody();
-    $nombre = $data['nombre'];
-    $descripcion = $data['descripcion'];
-    $fecha_lanzamiento = $data['fecha_lanzamiento'];
 
-    $stmt = $pdo->prepare("INSERT INTO juegos (nombre, descripcion, fecha_lanzamiento) VALUES (?, ?, ?)");
-    $stmt->execute([$nombre, $descripcion, $fecha_lanzamiento]);
+    $nombre = $data['nombre'] ?? '';
+    $descripcion = $data['descripcion'] ?? '';
+    $imagen = $data['imagen'] ?? '';
+    $clasificacion_edad = $data['clasificacion_edad'] ?? '';
 
-    $response->getBody()->write(json_encode(['status' => 'Juego creado']));
-    return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
-});//->add($authMiddleware)->add($adminMiddleware);
+    
+ try {
+       // Validar length del nombre
+       if (strlen($nombre) > 45) {
+        $response->getBody()->write(json_encode(['error' => 'El nombre del juego no puede tener mas de 45 caracteres.']));
+        return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+    }
 
+        // Validar clasificacion de edad
+        $validAgeRatings = ['ATP', '+13', '+18'];
+        if (!in_array($clasificacion_edad, $validAgeRatings)) {
+            $response->getBody()->write(json_encode(['error' => 'La clasificacion de edad debe ser ATP, +13, o +18.']));
+            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+        }
+
+        //Image to Base64
+      // Inicializar $imageData
+       $imageData = null;
+
+   //  Check si la imagen existe o es una cadena base64
+   if (file_exists($imagen)) {
+       // Convertir la imagen a Base64
+       $imageData = base64_encode(file_get_contents($imagen));
+   } else {
+       // Si archivo no existe verificamos si es base64
+       if (preg_match('/^data:image\/(\w+);base64,/', $imagen, $type)) {
+           // Es una cadena base64; tomamos los datos base64 reales
+           $data = substr($imagen, strpos($imagen, ',') + 1);
+           $imageData = base64_decode($data);
+
+           if ($imageData === false) {
+               $response->getBody()->write(json_encode(['error' => 'Datos base64 inválidos.']));
+               return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+           }
+
+           // También se puede guardar la cadena base64 sin procesar directamente
+           $imageData = $imagen; // Descomente esta línea para almacenar la cadena base64 completa
+       } else {
+           // // Si no hay una ruta de archivo válida ni una cadena base64, devuelve un error
+           $response->getBody()->write(json_encode(['error' => 'El archivo de imagen no se encuentra o es inválido.']));
+           return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+       }
+   }
+
+// Insertar el juego en la db
+      $stmt = $pdo->prepare("INSERT INTO juego (nombre, descripcion, imagen, clasificacion_edad) VALUES (?, ?, ?, ?)");
+      $stmt->execute([$nombre, $descripcion, $imageData, $clasificacion_edad]);
+
+      $response->getBody()->write(json_encode(['status' => 'Juego creado']));
+      return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+
+    } catch (PDOException $e) {
+
+        // Handle db exceptions
+        $response->getBody()->write(json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    } catch (Exception $e) {
+        // Handle unexpected exceptions
+        $response->getBody()->write(json_encode(['error' => 'Error inesperado: ' . $e->getMessage()]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    }
+
+})->add($checkAdmin)->add($tokenValidationMiddleware); //Last in, first OUT!
 
 //Solo usuario logeado y que sea administrador
 //Editar datos juego Put
@@ -145,7 +203,7 @@ $app->put('/juego/{id}', function (Request $request, Response $response, array $
     $fecha_lanzamiento = $data['fecha_lanzamiento'];
 
     // Verificar si el juego existe
-    $stmt = $pdo->prepare("SELECT * FROM juegos WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM juego WHERE id = ?");
     $stmt->execute([$juegoId]);
     $juego = $stmt->fetch();
 
@@ -155,7 +213,7 @@ $app->put('/juego/{id}', function (Request $request, Response $response, array $
     }
 
     // Actualizar juego
-    $stmtUpdate = $pdo->prepare("UPDATE juegos SET nombre = ?, descripcion = ?, fecha_lanzamiento = ? WHERE id = ?");
+    $stmtUpdate = $pdo->prepare("UPDATE juego SET nombre = ?, descripcion = ?, fecha_lanzamiento = ? WHERE id = ?");
     $stmtUpdate->execute([$nombre, $descripcion, $fecha_lanzamiento, $juegoId]);
 
     $response->getBody()->write(json_encode(['status' => 'Juego actualizado']));
