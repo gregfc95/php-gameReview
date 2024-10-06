@@ -72,7 +72,7 @@ Puedes probar la API con herramientas como Postman o curl. La API admite varios 
 | DELETE | /usuario/{id}    | Permite Borrar tu propio usuario        |
 | GET | /usuario/{id}    | Retorna el JSON de tu propio usuario        |
 | GET | /juego/{id}    | Retorna el JSON de un juego       |
-| GET | /juegos?pagina={pagina}&clasificacion={clasificacion}&texto={texto}&plataforma={plataforma}    | Filtro con queryParams, Clasificacion, texto (nombre del juego), plataforma     |
+| GET | /juegos?pagina={pagina}&clasificacion={clasificacion}&texto={texto}&plataforma={plataforma}| Filtro con queryParams
 | POST | /juego/    | Crea un juego, solo admin y logged user       |
 | PUT | /juego/{id}    | Edita un juego, solo admin y logged user       |
 | DELETE | /juego/{id}    | Borra un juego, solo admin y logged user       |
