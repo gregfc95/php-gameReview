@@ -3,8 +3,11 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-//Traer PDO
+//Traer PDO esto no funciona, solo se puede del index
 //$pdo = require_once __DIR__ . '/../config/connect.db.php';
+
+//Global PDO, refactorizar a container luego
+global $pdo;
 require_once __DIR__ . '/../helpers/pdo.helper.php';
 
 
@@ -31,7 +34,7 @@ $app->post('/usuario', function (Request $request, Response $response) use ($pdo
         // Insertar el usuario en la base de datos
         $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)");
         $stmt->execute([$username, $hashedPassword]);
-       
+
         // Respuesta exitosa
         $response->getBody()->write(json_encode(['status' => 'Usuario creado con exito']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
@@ -70,9 +73,7 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
         $stmt->execute([$username, $password, $id]);
         $response->getBody()->write(json_encode(['status' => 'Usuario actualizado correctamente']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-    } 
-    
-    catch (Exception $e) {
+    } catch (Exception $e) {
         $response->getBody()->write(json_encode(['error' => 'Error al actualizar el usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
@@ -81,10 +82,10 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
 
 
 //Borrar Usuario Delete
-$app->delete('/usuario/{id}',function(Request $request, Response $response, array $args) use($pdo){
+$app->delete('/usuario/{id}', function (Request $request, Response $response, array $args) use ($pdo) {
     // Obtener el id del usuario desde los parámetros de la ruta
     $id = $args['id'];
-    
+
     // Obtener el usuario autenticado desde el middleware
     $authenticatedUser = $request->getAttribute('user');
 
@@ -111,7 +112,7 @@ $app->delete('/usuario/{id}',function(Request $request, Response $response, arra
 // Obtener Usuario Get
 $app->get('/usuario/{id}', function (Request $request, Response $response, array $args) use ($pdo) {
     $id = $args['id'];
-    
+
     // Obtener el usuario autenticado desde el middleware
     $user = $request->getAttribute('user');
 
