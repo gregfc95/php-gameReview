@@ -64,11 +64,13 @@ Puedes probar la API con herramientas como Postman o curl. La API admite varios 
 | Method | Endpoint        | Description                                  |
 |--------|------------------|----------------------------------------------|
 | GET    | /test            | Test endpoint verifica si la API está funcionando |
-| POST   | /         | ID                   |
-| GET    | /         | ID                  |
-| GET    | //{id}    | ID        |
-| PUT    | //{id}    | ID         |
-| DELETE | //{id}    | ID         |
+| POST   | /login         | Permite ingresar como usuario usando credenciales validas, genera un token con vencimiento                   |
+| POST    | /register         | Permite Crear un User                  |
+| POST    | /usuario    | Permite Crear un User        |
+| PUT    | /usuario/{id}    | Permite Editar tu propio usuario         |
+| DELETE | /usuario/{id}    | Permite Borrar tu propio usuario        |
+| GET | /usuario/{id}    | Retorna el JSON de tu propio usuario        |
+
 
 ## Error Handling
 
