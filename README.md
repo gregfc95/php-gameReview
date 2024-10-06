@@ -4,7 +4,8 @@
 - Slim Framework 4.x
 - MySQL for the database
 - Composer para la gestión de dependencias
-- dotenv para la gestión de variables de entorno
+- "XAMPP" como gestor de MySQL y Apache server
+- "vlucas/phpdotenv" para la gestión de variables de entorno
 
 ## Instalación
 
@@ -12,7 +13,7 @@ Para configurar este proyecto localmente, siga estos pasos:
 
 1. Clone el repositorio:
 ```bash
-   git clone https://github.com/yourusername/php-gameReview.git
+   git clone https://github.com/gregfc95/php-gameReview.git
 ```
 
 
@@ -43,7 +44,7 @@ Para configurar este proyecto localmente, siga estos pasos:
 
     #puerto de acceso a phpmyadmin
     DBADMIN_PORT=8080
-    #Ejercicio no requiere JWT
+    #Ejercicio no requiere JWT - Deprecated
     #JWT key
     #JWT_SECRET=
 ```
