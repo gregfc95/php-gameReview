@@ -224,8 +224,18 @@ $app->delete('/juego/{id}', function (Request $request, Response $response, arra
     $juegoId = $args['id'];
 
     try {
+        // Verificar si el juego existe
+        $stmtCheck = $pdo->prepare("SELECT * FROM juego WHERE id = ?");
+        $stmtCheck->execute([$juegoId]);
+        $juego = $stmtCheck->fetch();
+
+        if (!$juego) {
+            $response->getBody()->write(json_encode(['error' => 'Juego no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
+
         // Verificar si el juego tiene calificaciones
-        $stmt = $pdo->prepare("SELECT * FROM calificaciones WHERE juego_id = ?");
+        $stmt = $pdo->prepare("SELECT * FROM calificacion WHERE juego_id = ?");
         $stmt->execute([$juegoId]);
         $calificaciones = $stmt->fetchAll();
 
@@ -235,7 +245,7 @@ $app->delete('/juego/{id}', function (Request $request, Response $response, arra
         }
 
         // Eliminar el juego
-        $stmtDelete = $pdo->prepare("DELETE FROM juegos WHERE id = ?");
+        $stmtDelete = $pdo->prepare("DELETE FROM juego WHERE id = ?");
         $stmtDelete->execute([$juegoId]);
 
         $response->getBody()->write(json_encode(['status' => 'Juego eliminado']));
