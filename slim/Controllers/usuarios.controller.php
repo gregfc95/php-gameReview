@@ -2,54 +2,56 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
 
 //Traer PDO
-$pdo = require_once __DIR__ . '/../config/connect.db.php';
+//$pdo = require_once __DIR__ . '/../config/connect.db.php';
 require_once __DIR__ . '/../helpers/pdo.helper.php';
 
-//Comprobar PDO
-$responseCheck = checkDatabaseConnection($pdo, $response);
-if ($responseCheck) {
-    return $responseCheck;
-}
 
-//MiddleWare
-require_once __DIR__ . '/../middle/auth.middleware.php';
-
-$app = AppFactory::create();
 //Crear Usuario POST
-$app->post('/usuario',function(Request $request, Response $response) use($pdo){
+$app->post('/usuario', function (Request $request, Response $response) use ($pdo) {
     $data = $request->getParsedBody();
-    $username = $data['nombre_usuario'];
+    $username = $data['nombre_usuario'] ?? '';
+    $password = $data['clave'] ?? '';
 
     try {
-        // Insertar el usuario en la base de datos
-        $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)");
-        
-        if ($stmt->execute([$username])){
-            // Si todo sale bien, devolver estado 201 (Created)
-            $response->getBody()->write(json_encode(['status' => 'Usuario creado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+        // Verificar si el nombre de usuario ya está en uso
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE nombre_usuario = ?");
+        $stmt->execute([$username]);
+        $usernameExists = $stmt->fetchColumn();
+
+        if ($usernameExists) {
+            $response->getBody()->write(json_encode(['error' => 'El nombre de usuario ya esta en uso.']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
         }
 
+        // Encriptar la clave forzado a 16 caracteres
+        $hashedPassword = substr(md5($password), 0, 16);
+
+        // Insertar el usuario en la base de datos
+        $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)");
+        $stmt->execute([$username, $hashedPassword]);
+       
+        // Respuesta exitosa
+        $response->getBody()->write(json_encode(['status' => 'Usuario creado con exito']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
     } catch (PDOException $e) {
-       // Si hay un error con la consulta, devolver estado 500 (Internal Server Error)
-       $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
-       return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
-   }
-});
+        // Si hay un error con la consulta, devolver estado 500 (Internal Server Error)
+        $response->getBody()->write(json_encode(['error' => 'Error al crear el usuario', 'details' => $e->getMessage()]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+})->add('validateUserInput');
 
 
 //Editar Usuario Put
 $app->put('/usuario/{id}', function (Request $request, Response $response, array $args) use ($pdo) {
     // Obtener el id del usuario desde los parámetros de la ruta
     $id = $args['id'];
-    
+
     // Obtener el usuario autenticado desde el middleware
     $authenticatedUser = $request->getAttribute('user');
-      // Verificar si el usuario autenticado tiene permiso para editar
-      if ($authenticatedUser['id'] != $id) {
+
+    if ($authenticatedUser['id'] != $id) {
         $response->getBody()->write(json_encode(['error' => 'No autorizado para modificar este usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
     }
@@ -57,22 +59,24 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
     // Obtener los datos enviados en el cuerpo de la solicitud
     $data = $request->getParsedBody();
     $username = $data['nombre_usuario'] ?? null;
-    $password = isset($data['clave']) ? password_hash($data['clave'], PASSWORD_BCRYPT) : null;
+    $password = isset($data['clave']) ? substr(md5($data['clave']), 0, 16) : null;
 
-  // Preparar la consulta de actualización
-  $query = "UPDATE usuario SET nombre_usuario = ?, clave = ? WHERE id = ?";
-  $stmt = $pdo->prepare($query);
+    // Preparar la consulta de actualización
+    $query = "UPDATE usuario SET nombre_usuario = ?, clave = ? WHERE id = ?";
+    $stmt = $pdo->prepare($query);
 
-  // Ejecutar la consulta con los nuevos valores
-  try {
-      $stmt->execute([$username, $password, $id]);
-      $response->getBody()->write(json_encode(['status' => 'Usuario actualizado correctamente']));
-      return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-  } catch (Exception $e) {
-      $response->getBody()->write(json_encode(['error' => 'Error al actualizar el usuario']));
-      return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
-  }
-});//->add($authMiddleware); // Añadir el middleware de autenticación
+    // Ejecutar la consulta con los nuevos valores
+    try {
+        $stmt->execute([$username, $password, $id]);
+        $response->getBody()->write(json_encode(['status' => 'Usuario actualizado correctamente']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    } 
+    
+    catch (Exception $e) {
+        $response->getBody()->write(json_encode(['error' => 'Error al actualizar el usuario']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+})->add($tokenValidationMiddleware);  // Añadir el middleware de autenticación
 
 
 
@@ -101,17 +105,14 @@ $app->delete('/usuario/{id}',function(Request $request, Response $response, arra
         $response->getBody()->write(json_encode(['error' => 'Error al eliminar el usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
-});//->add($authMiddleware); // Añadir el middleware de autenticación
+})->add($tokenValidationMiddleware);  // Añadir el middleware de autenticación
 
 
-
-
-
-
-    //Obtener Usuario get
-$app->get('/usuario/{id}',function(Request $request, Response $response, array $args) use($pdo){
+// Obtener Usuario Get
+$app->get('/usuario/{id}', function (Request $request, Response $response, array $args) use ($pdo) {
     $id = $args['id'];
-      // Obtener el usuario autenticado desde el middleware
+    
+    // Obtener el usuario autenticado desde el middleware
     $user = $request->getAttribute('user');
 
     // Obtener información del usuario por ID
@@ -126,4 +127,4 @@ $app->get('/usuario/{id}',function(Request $request, Response $response, array $
         $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
     }
-});//->add($authMiddleware);
+})->add($tokenValidationMiddleware); // Añadir el middleware de autenticación // Añadir el middleware de autenticación
