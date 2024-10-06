@@ -27,25 +27,25 @@ Para configurar este proyecto localmente, siga estos pasos:
    
 4. Configure la conexión a la base de datos creando un archivo .env en el directorio raíz del proyecto. Puede utilizar el archivo .env.example como referencia:
 ```bash
-    nombre del proyecto docker-compose
+    #nombre del proyecto docker-compose
     COMPOSE_PROJECT_NAME=seminariophp
 
     #nombre del volumen para la base de datos
     DB_VOLUME=seminariophp
 
-    nombre, usuario y contraseña de la base de datos
+    #nombre, usuario y contraseña de la base de datos
     DB_NAME=seminariophp
     DB_USER=root
     DB_PASS=
 
-    puerto de acceso a la aplicación
+    #puerto de acceso a la aplicación
     SLIM_PORT=80
 
-    puerto de acceso a phpmyadmin
+    #puerto de acceso a phpmyadmin
     DBADMIN_PORT=8080
-
-    JWT key
-    JWT_SECRET=
+    #Ejercicio no requiere JWT
+    #JWT key
+    #JWT_SECRET=
 ```
  
 
@@ -71,7 +71,9 @@ Puedes probar la API con herramientas como Postman o curl. La API admite varios 
 | DELETE | /usuario/{id}    | Permite Borrar tu propio usuario        |
 | GET | /usuario/{id}    | Retorna el JSON de tu propio usuario        |
 | GET | /juego/{id}    | Retorna el JSON de un juego       |
-
+| POST | /juego/    | Crea un juego, solo admin y logged user       |
+| PUT | /juego/{id}    | Edita un juego, solo admin y logged user       |
+| PUT | /juego/{id}    | Borra un juego, solo admin y logged user       |
 
 ## Error Handling
 
