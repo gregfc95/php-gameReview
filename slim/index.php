@@ -15,6 +15,7 @@ require __DIR__ . '/vendor/autoload.php';
 //Middleware
 require __DIR__ . '/middleware/token.middleware.php';  // Checkeo de vencimiento
 require __DIR__ . '/middleware/validation.middleware.php';  // validaciones basicas
+require __DIR__ . '/middleware/juego.validation.middleware.php';  // validaciones de juego
 require __DIR__ . '/middleware/admin.middleware.php';  // Middleware para admin
 
 // Create App
