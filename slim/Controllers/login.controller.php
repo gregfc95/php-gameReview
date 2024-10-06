@@ -8,6 +8,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 require_once __DIR__ . '/../helpers/pdo.helper.php';
 require_once __DIR__ . '/../config/token.php';
 
+//Refactorizar a container
+global $pdo;
+
 //route login 
 $app->post('/login', function (Request $request, Response $response) use ($pdo) {
     $data = $request->getParsedBody();
@@ -46,6 +49,9 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo) 
         // Actualizar la base de datos con el token y su fecha de vencimiento
         $stmt = $pdo->prepare("UPDATE usuario SET token = ?, vencimiento_token = ? WHERE id = ?");
         $stmt->execute([$token, date('Y-m-d H:i:s', time() + 3600), $user['id']]);
+        
+        //Checkear timezone
+        //echo date_default_timezone_get();
 
         // Devolver el token en la respuesta
         $response->getBody()->write(json_encode(['token' => $token]));
