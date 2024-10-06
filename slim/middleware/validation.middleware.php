@@ -1,13 +1,10 @@
 <?php
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Psr7\Response as SlimResponse;
 
-// validation.middleware.php
-
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Psr7\Response;
-
-function validateUserInput(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+function validateUserInput(Request $request, RequestHandler $handler): Response {
     // Obtener los datos enviados en el cuerpo de la solicitud
     $data = $request->getParsedBody();
 
@@ -34,8 +31,8 @@ function validateUserInput(ServerRequestInterface $request, RequestHandlerInterf
 }
 
 // Helper para crear una respuesta de error
-function createErrorResponse(int $status, string $message): ResponseInterface {
-    $response = new Response();
+function createErrorResponse(int $status, string $message): Response {
+    $response = new SlimResponse();
     $response->getBody()->write(json_encode(['error' => $message]));
     
     return $response->withStatus($status)
