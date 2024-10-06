@@ -104,9 +104,9 @@ $app->get('/juegos/{id}', function (Request $request, Response $response, array 
         $juego = $stmt->fetch();
 
         if (!$juego) {
-            return $response->withStatus(404)
-                ->withHeader('Content-Type', 'application/json')
-                ->getBody()->write(json_encode(['error' => 'Juego no encontrado']));
+            // Return 404 si no se encuentra el juego
+            $response->getBody()->write(json_encode(['error' => 'Juego no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
         }
 
         // Obtener calificaciones del juego
