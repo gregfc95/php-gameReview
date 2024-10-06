@@ -89,6 +89,7 @@ La API proporciona respuestas de error en caso de solicitudes no válidas. Los c
 - 500 Error interno del servidor: cuando hay un error del servidor.
 
 
+
 ## API Reference
 
 #### Login 
@@ -175,3 +176,99 @@ clave: 8 chars, min, mayus, num y carac especiales
 | `Authorization ` | `string` | **Required**. Bearer <user_token> |
 
 
+#### Query Parameter - Juego
+
+```http
+  GET /juegos?pagina={pagina}&clasificacion={clasificacion}&texto={texto}&pl
+ataforma={plataforma} 
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `pagina ` | `string` | **Required**. 1|
+| `clasificacion ` | `string` | Valores: 18,13,ATP |
+| `texto ` | `string` | nombre_del_juego |
+| `plataforma ` | `string` | valores: PC, PS, XBOX, Android, Otro |
+
+#### Retornar - Juego
+
+```http
+  GET /juegos/{id} 
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `none` | `none` | none |
+
+#### POST - Juego
+
+```http
+  POST /juego
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+**Required** es_admin == 1
+
+#### PUT - Juego
+
+```http
+  POST /juego/{id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+**Required** es_admin == 1
+
+#### DELETE - Juego
+
+```http
+  DELETE /juego/{id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+**Required** es_admin == 1
+
+Solo si no tiene calificaciones
+
+#### POST - Calificacion
+
+```http
+  POST /calificacion
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+
+#### PUT - Calificacion
+
+```http
+  PUT /calificacion/{id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+**Required** solo calificaciones propias
+
+#### DELETE - Calificacion
+
+```http
+  DELETE /calificacion/{id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Authorization ` | `string` | **Required**. Bearer <user_token> |
+
+**Required** solo calificaciones propias
