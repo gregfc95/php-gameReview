@@ -87,13 +87,11 @@ $app->put('/calificacion/{id}', function (Request $request, Response $response, 
         $stmt->execute([$estrellas, $calificacionId]);
         $response->getBody()->write(json_encode(['status' => 'Calificacion actualizada']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-
     } catch (PDOException $e) {
         return createErrorResponse(500, 'Error en la base de datos: ' . $e->getMessage());
     } catch (Exception $e) {
         return createErrorResponse(500, 'Ocurrió un error inesperado: ' . $e->getMessage());
     }
-
 })->add($tokenValidationMiddleware)->add('validateEstrella'); //Last in, first OUT!
 
 
@@ -130,7 +128,6 @@ $app->delete('/calificacion/{id}', function (Request $request, Response $respons
 
         $response->getBody()->write(json_encode(['status' => 'Calificacion eliminada']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-        
     } catch (PDOException $e) {
         // Manejo de errores de la base de datos
         $response->getBody()->write(json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]));
@@ -140,5 +137,4 @@ $app->delete('/calificacion/{id}', function (Request $request, Response $respons
         $response->getBody()->write(json_encode(['error' => 'Ocurrio un error inesperado: ' . $e->getMessage()]));
         return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
     }
-
 })->add($tokenValidationMiddleware); //Last in, first OUT!
