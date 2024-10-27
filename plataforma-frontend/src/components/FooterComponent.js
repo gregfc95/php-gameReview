@@ -1,5 +1,6 @@
 import React from 'react'
 import '../assets/styles/footer.css';
+import { FaGithub } from "react-icons/fa";
 
 
 const FooterComponent = ( {name, group} ) => {
@@ -16,7 +17,7 @@ const FooterComponent = ( {name, group} ) => {
                 rel="noopener noreferrer"
                 className='footer-link'
             >
-                GitHub
+                <FaGithub size={24}/>
             </a>
         </footer>
     );
