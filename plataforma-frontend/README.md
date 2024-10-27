@@ -1,6 +1,7 @@
 ## Tecnologías
 
 - react: 18.3.1
+- react-icons, para incluir iconos
 
 ## Instalación
 
