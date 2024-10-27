@@ -6,7 +6,7 @@ import FooterComponent from './components/FooterComponent';
 
 //TODO
 //Toastify 
-const App = () => {
+function App() {
   return (
     <>
     <Navbar />

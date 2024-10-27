@@ -1,6 +1,6 @@
 import React from 'react'
 
-const JuegoCreatePage = () => {
+function JuegoCreatePage(){
   return (
     <div>JuegoCreatePage</div>
   )

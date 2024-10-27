@@ -3,7 +3,7 @@ import React from 'react'
 /*
  * JuegoPage component renders the list of all games from our DB
  */
-const JuegoPage = () => {
+function JuegoPage() {
   return (
       <div>
     <div>JuegoPage</div>
