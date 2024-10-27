@@ -3,7 +3,7 @@ import '../assets/styles/footer.css';
 import { FaGithub } from "react-icons/fa";
 
 
-const FooterComponent = ( {name, group} ) => {
+function FooterComponent ({ name, group }) {
     const currentYear = new Date().getFullYear();
 
     return (
