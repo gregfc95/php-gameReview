@@ -1,0 +1,126 @@
+.error-message {
+    color: #e49f9f;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+
+.login-page {
+    display: grid;
+    align-items: center;
+    height: 100vh;
+    background: #F2F2F2;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.signup-page {
+    display: grid;
+    align-items: center;
+    height: 100vh;
+    background: #F2F2F2;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+form {
+    justify-self: center;
+    background-color: #2E4258;
+    padding: 2rem; 
+    border-radius: 8px; 
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+    z-index: 1;
+    
+}
+
+form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem; 
+    color: #F2F2F2; 
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    overflow: hidden;
+}
+
+.input-box input {
+    width: 100%;
+    height: 45px;
+    padding-left: 2.5rem; 
+    border: 1px solid #ddd;
+    outline: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    padding: 0.5rem 1rem;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+}
+
+.input-box .icon {
+    position: absolute;
+    left: 90%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b3aaaa;
+    font-size: 1.2rem;
+}
+
+.login-page .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    color: #F2F2F2;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    color: white;
+    background-color: #333;
+    border: 2px solid #333;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"] {
+    background-color: #444;
+}
+
+button[type="submit"]:hover {
+    background-color: #2A8FAA;
+}
+
+.signup-page button[type="submit"]:hover {
+    background-color: #ce6f22;
+}
+
+.register-link {
+    margin-top: 1rem;
+}
+
+.register-link p {
+    font-size: 0.9rem;
+    color: #F2F2F2;
+}
+
+.register-link a {
+    color: #ce6f22;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+    color: #2A8FAA;
+}
