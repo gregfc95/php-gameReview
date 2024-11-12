@@ -71,6 +71,7 @@ $app->put('/usuario/{id}', function (Request $request, Response $response, array
     // Ejecutar la consulta con los nuevos valores
     try {
         $stmt->execute([$username, $password, $id]);
+        
         $response->getBody()->write(json_encode(['status' => 'Usuario actualizado correctamente']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } catch (Exception $e) {
@@ -121,17 +122,28 @@ $app->get('/usuario/{id}', function (Request $request, Response $response, array
     if ($userId != $id) {
             return createErrorResponse(401, 'No autorizado');
     }
+    //Corregido a Try Catch
 
-    // Obtener información del usuario por ID
-    $stmt = $pdo->prepare("SELECT * FROM usuario WHERE id = ?");
-    $stmt->execute([$id]);
-    $userInfo = $stmt->fetch();
+    try {
+        // Obtener información del usuario por ID
+        $stmt = $pdo->prepare("SELECT * FROM usuario WHERE id = ?");
+        $stmt->execute([$id]);
+        $userInfo = $stmt->fetch(PDO::FETCH_ASSOC); // Corrección, se agregó PDO::FETCH_ASSOC para que devuelva un arreglo asociativo
 
-    if ($userInfo) {
-        $response->getBody()->write(json_encode($userInfo));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-    } else {
-        $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        if ($userInfo) {
+            $response->getBody()->write(json_encode($userInfo));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        } else {
+            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+    } catch (PDOException $e) {
+        // Manejo de errores de la base de datos
+        $response->getBody()->write(json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    } catch (Exception $e) {
+        // Manejo de errores generales
+        $response->getBody()->write(json_encode(['error' => 'Ocurrió un error inesperado: ' . $e->getMessage()]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
     }
 })->add($tokenValidationMiddleware); // Añadir el middleware de autenticación

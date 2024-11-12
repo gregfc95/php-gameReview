@@ -10,6 +10,8 @@ try {
         $_ENV['DB_USER'],
         $_ENV['DB_PASS']
     );
+    //Setear UTC timezone para la db sesion esto no
+    //$pdo->exec("SET time_zone = '+00:00'");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     error_log('Connection failed: ' . $e->getMessage());

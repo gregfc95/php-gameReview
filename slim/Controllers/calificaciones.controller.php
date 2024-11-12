@@ -23,10 +23,21 @@ $app->post('/calificacion', function (Request $request, Response $response) use 
         $juegoId = $data['juego_id'] ?? null;
         $estrellas = $data['estrellas'] ?? null;
 
+        //Correcion
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM juego WHERE id = ?");
+        $stmt->execute([$juegoId]);
+        $gameExists = $stmt->fetchColumn();
+
+        if ($gameExists == 0) {
+            // Si el juego no existe, retornar un 404
+            $response->getBody()->write(json_encode(['error' => 'Juego no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+
         // Verificar si ya existe una calificación para el mismo juego por parte del mismo usuario
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM calificacion WHERE usuario_id = ? AND juego_id = ?");
         $stmt->execute([$userId, $juegoId]);
-        $exists = $stmt->fetchColumn();
+        $exists = $stmt->fetchColumn(PDO::FETCH_NUM);
 
         if ($exists > 0) {
             $response->getBody()->write(json_encode(['error' => 'Ya has calificado este juego']));
