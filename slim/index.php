@@ -18,15 +18,16 @@ require __DIR__ . '/middleware/validation.middleware.php';  // validaciones basi
 require __DIR__ . '/middleware/juego.validation.middleware.php';  // validaciones de juego
 require __DIR__ . '/middleware/admin.middleware.php';  // Middleware para admin
 require __DIR__ . '/middleware/estrella.validation.middleware.php'; // Middleware para estrellas
+require __DIR__ . '/middleware/cors.middleware.php'; // Middleware para CORS
 
 // Create App
 $app = AppFactory::create();
 $app->setBasePath('/php-gameReview/slim');
 
+$app->add($corsMiddleware); //CORS middleware
 
 $app->addBodyParsingMiddleware();   // Middleware for JSON body parsing
 $app->addRoutingMiddleware();   // Routing Middleware
-
 $app->addErrorMiddleware(true, true, true); // Error Middleware 
 
 //Endpoints (Controllers)
