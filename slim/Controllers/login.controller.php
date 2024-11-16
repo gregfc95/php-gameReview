@@ -11,6 +11,25 @@ require_once __DIR__ . '/../config/token.php';
 //Refactorizar a container
 global $pdo;
 
+//route validation-token
+$app->get('/validar-token', function(Request $request, Response $response) use ($pdo) {
+
+    $user = $request->getAttribute('user');
+
+    // Chqueamos si el user esta presente
+    if ($user) {
+        // Si existe, el token es valido
+        $response->getBody()->write(json_encode(['message' => 'Token valido', 'nombre_usuario' => $user['nombre_usuario'], 'es_admin' => $user['es_admin'], 'vencimiento_token' => $user['vencimiento_token'] ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    } else {
+        // Token es invalido
+        $response->getBody()->write(json_encode(['error' => 'Token no valido']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+    }
+
+})->add($tokenValidationMiddleware);
+
+
 //route login 
 $app->post('/login', function (Request $request, Response $response) use ($pdo) {
     $data = $request->getParsedBody();
@@ -54,7 +73,7 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo) 
         //echo date_default_timezone_get();
 
         // Devolver el token en la respuesta
-        $response->getBody()->write(json_encode(['token' => $token]));
+        $response->getBody()->write(json_encode(['token' => $token, 'vencimiento_token' => $user['vencimiento_token'], 'es_admin' => $user['es_admin'], 'nombre_usuario' => $user['nombre_usuario']]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } catch (PDOException $e) {
         // Si hay un error con la consulta o la base de datos, devolver estado 500 (Internal Server Error)
