@@ -12,7 +12,7 @@ $tokenValidationMiddleware = function (Request $request, RequestHandler $handler
     $authHeader = $request->getHeader('Authorization');
     
     $token = str_replace('Bearer ', '', $authHeader[0] ?? '');
-
+    //var_dump('token: ' . $token);  
     if (!$token) {
         $response = new SlimResponse();
         $response->getBody()->write(json_encode(['error' => 'Token no proporcionado']));
@@ -22,9 +22,12 @@ $tokenValidationMiddleware = function (Request $request, RequestHandler $handler
         // Verificar el token
         $stmt = $pdo->prepare("SELECT * FROM usuario WHERE token = ? AND vencimiento_token > NOW()");
         $stmt->execute([$token]);
-        
         // Fetch user data
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+       // var_dump('current time: ' . date('Y-m-d H:i:s'));
+       // var_dump('Token expiration: ' . ($user ? $user['vencimiento_token'] : 'No user found')); 
+       // var_dump('es_admin : ' . ($user ? $user['es_admin'] : 'No user found')); 
+
         if (!$user) {
             $response = new SlimResponse();
             $response->getBody()->write(json_encode(['error' => 'Token invalido o caducado']));
