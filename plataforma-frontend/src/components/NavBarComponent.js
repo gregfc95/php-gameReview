@@ -13,9 +13,9 @@ function Navbar() {
     logout();
     navigate("/");
   };
-  if (loading) {
+   if (loading) {
     return <div>Loading...</div>;
-  }
+  } 
   return (
     <nav>
       <Header title="Plataforma" />
@@ -37,7 +37,7 @@ function Navbar() {
             <NavLink to="/juego/crear">Crear Juego</NavLink>
           </li>
         ) : (
-          "False"
+          null
         )}
         {!isAuthenticated ? (
           <>

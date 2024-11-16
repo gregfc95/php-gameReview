@@ -7,7 +7,6 @@ function HomeComponent() {
   //second value will be a function that we can use to update our state, e.g. "setJuegos"
   const [juegos, setJuegos] = useState([]);
   const [page, setPage] = useState(1);
-  //default state is an empty array
 
   useEffect(() => {
     const loadjuegos = async () => {

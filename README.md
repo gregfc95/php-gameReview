@@ -79,6 +79,8 @@ Puedes probar la API con herramientas como Postman o curl. La API admite varios 
 | POST | /calificacion/  | Crea una calificacion, solo logged user     |
 | PUT | /calificacion/{id}  | Edita una calificacion, solo logged user     |
 | DELETE | /calificacion/{id}  | Borra una calificacion, solo logged user     |
+| GET | /validar-token  | Envia una peticion al servidor para confirmar token/vencimiento     |
+
 
 ## Error Handling
 
