@@ -116,12 +116,12 @@ $app->get('/usuario/{id}', function (Request $request, Response $response, array
 
     // Obtener el usuario autenticado desde el middleware
     $user = $request->getAttribute('user');
-    $userId = $user['id']; //extraer el userId
+     /* $userId = $user['id']; //extraer el userId
 
-        // Verificar si el usuario autenticado es el mismo que el usuario
+      // Verificar si el usuario autenticado es el mismo que el usuario
     if ($userId != $id) {
             return createErrorResponse(401, 'No autorizado');
-    }
+    }*/
     //Corregido a Try Catch
 
     try {
