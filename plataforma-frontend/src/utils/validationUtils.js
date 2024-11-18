@@ -27,3 +27,10 @@ export const validateUsername = (username) => {
     }
     return null;
   };
+
+  export const validateCreationFields = (name,description,clasificacion,plataforma,imagen) => {
+    if (!name || !description || !clasificacion || !plataforma || !imagen) {
+    return "Por favor, ingresa todos los campos.";    
+    }
+    return null;
+  }

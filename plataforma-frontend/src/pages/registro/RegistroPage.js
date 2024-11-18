@@ -59,10 +59,10 @@ const RegistroPage = () => {
         });
 
         if (responseLogin.status === 200) {
-          const { token, vencimiento_token, es_admin, nombre_usuario } =
+          const { token, es_admin, nombre_usuario } =
           responseLogin.data;
           console.log("Login successful:", responseLogin.data);
-          login(token, vencimiento_token, es_admin, nombre_usuario);
+          login(token, es_admin, nombre_usuario);
           //Limpiar los campos
           setUsername("");
           setPassword("");

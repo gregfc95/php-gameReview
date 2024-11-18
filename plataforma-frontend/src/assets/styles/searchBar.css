@@ -1,0 +1,36 @@
+.search-bar {
+    margin: 20px;
+    padding: 0px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .search-bar input {
+    width: 300px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+    
+  .search-bar select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+  
+  .search-bar select[multiple] {
+    height: 120px;
+    width: 200px;
+    padding: 8px;
+    overflow-y: auto;
+  }
+  

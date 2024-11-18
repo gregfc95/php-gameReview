@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Header from "./HeaderComponent";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../services/AuthProvider";
 import "../assets/styles/navBar.css";
 
@@ -24,12 +24,9 @@ function Navbar() {
         <span></span>
         <span></span>
       </div>
-      <ul className={menuOpen ? "open" : ""}>
+      <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
         <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <NavLink to="/juegos">Juegos</NavLink>
+          <NavLink to="/">Home</NavLink>
         </li>
         
         {isAuthenticated && esAdmin ? (
@@ -39,6 +36,7 @@ function Navbar() {
         ) : (
           null
         )}
+
         {!isAuthenticated ? (
           <>
             <li>
@@ -49,17 +47,18 @@ function Navbar() {
             </li>
           </>
         ) : null}
+        
         {isAuthenticated ? (
-          <>
+          <div className="user-info">
             <li>
-              <span>{username}</span>
+              <span className="username">{username}</span>
             </li>
             <li>
               <button onClick={handleLogout} className="logout-button">
                 Logout
               </button>
             </li>
-          </>
+          </div>
         ) : null}
       </ul>
     </nav>

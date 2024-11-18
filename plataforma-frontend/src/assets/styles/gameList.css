@@ -1,0 +1,64 @@
+.juegos-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Display 5 items per row */
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+.game-card-link {
+    list-style: none;
+    text-decoration: none;
+    color: black;
+}
+  
+  .juegos-list div {
+    background-color: #f4f4f4;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .juegos-list img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .pagination button {
+    margin: 0rem 10rem;
+    padding: 0.5rem 1rem;
+    background-color: #031D40;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #FCB84B;
+  }
+
+  .no-juegos {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 780px) {
+    .juegos-list {
+      grid-template-columns: repeat(2, 1fr); /* 2 items per row on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .juegos-list {
+      grid-template-columns: 1fr; /* 1 item per row on very small screens */
+    }
+  }

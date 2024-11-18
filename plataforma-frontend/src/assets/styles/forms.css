@@ -1,0 +1,91 @@
+/* General styles for the login page */
+.form-main {
+    background-color: #F2F2F2; /* Background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 2rem;
+    margin-top: 80px;
+    margin-bottom: 80px;
+  }
+  
+  form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #031D40;
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  label {
+    font-size: 1rem;
+    color: #F2F2F2;
+    margin-bottom: 0.5rem;
+  }
+  
+  input,
+  textarea,
+  select {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #031D40;
+  }
+  
+  input[type="file"] {
+    border: none;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  select {
+    padding: 0.75rem;
+    background-color: #fff;
+  }
+  
+  select:focus {
+    border-color: #04C4D9;
+  }
+  
+  button {
+    padding: 0.75rem 1.5rem;
+    background-color: #031D40; /* Main color */
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+    width: 100%;
+  }
+  .error-message,
+  .success-message {
+    color: #F25C5C; /* Active color for error */
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .success-message {
+    color: #04C4D9; /* Secondary color for success */
+  }
+  

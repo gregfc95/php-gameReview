@@ -1,3 +1,4 @@
+
 .footer {
     display: flex;
     justify-content: center;
@@ -7,6 +8,7 @@
     background-color: #F2F2F2;
     color: #000000;
     text-align: center;
+    width: 100%;
 }
 
 .footer-text {

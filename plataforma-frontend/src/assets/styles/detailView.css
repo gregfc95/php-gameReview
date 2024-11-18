@@ -1,0 +1,114 @@
+/* Scoped Styles for JuegoDetailPage */
+.juego-detail-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .juego-detail-page h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .juego-detail-page p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  .juego-detail-page img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .juego-detail-page p.clasificacion {
+    font-size: 1rem;
+    color: #999;
+    margin-bottom: 10px;
+  }
+  
+  .juego-detail-page h3 {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .juego-detail-page ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .juego-detail-page li {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  .juego-detail-page div.rating {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+  }
+  
+  .juego-detail-page .highlight {
+    background-color: #ffefc1;
+    border: 1px solid #f1c40f;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .juego-detail-page form {
+    margin-top: 20px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .juego-detail-page label {
+    font-size: 1rem;
+    color: #444;
+    margin-right: 10px;
+  }
+  
+  .juego-detail-page select {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .juego-detail-page button {
+    padding: 8px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .juego-detail-page button:hover {
+    background-color: #2980b9;
+  }
+  
+  .juego-detail-page p.success-message {
+    color: #2ecc71;
+    font-weight: bold;
+  }
+  
+  .juego-detail-page p.error-message {
+    color: #F25C5C;
+    font-weight: bold;
+  }
+  

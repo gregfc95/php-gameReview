@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBarComponent";
 import { JuegoPage, JuegoDetailPage, JuegoCreatePage, LoginPage, RegistroPage } from "./pages";
 import FooterComponent from "./components/FooterComponent";
-import { testAPIConnection } from "./tests/testAPIConnection";
+//import { testAPIConnection } from "./tests/testAPIConnection";
 import { AuthProvider } from './services/AuthProvider';
 //TODO
 //Toastify
@@ -25,7 +25,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<JuegoPage />} />
-        <Route path="/juego/:id" element={<JuegoDetailPage />} />
+        <Route path="/juegos/:id" element={<JuegoDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegistroPage />} />
         <Route path="/juego/crear" element={<JuegoCreatePage />} />

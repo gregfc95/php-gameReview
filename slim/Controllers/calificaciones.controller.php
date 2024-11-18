@@ -16,12 +16,12 @@ require_once __DIR__ . '/../config/token.php';
 $app->post('/calificacion', function (Request $request, Response $response) use ($pdo) {
     // Obtener el user del token desde el middleware
     $user = $request->getAttribute('user');
-    $userId = $user['id']; // Extraer el userId
+    $userId =(int) ($user['id']); // Extraer el userId
 
     try {
         $data = $request->getParsedBody();
-        $juegoId = $data['juego_id'] ?? null;
-        $estrellas = $data['estrellas'] ?? null;
+        $juegoId =(int) ($data['juego_id'] ?? 0);
+        $estrellas =(int) ($data['estrellas'] ?? 0);
 
         //Correcion
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM juego WHERE id = ?");
@@ -37,7 +37,7 @@ $app->post('/calificacion', function (Request $request, Response $response) use 
         // Verificar si ya existe una calificación para el mismo juego por parte del mismo usuario
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM calificacion WHERE usuario_id = ? AND juego_id = ?");
         $stmt->execute([$userId, $juegoId]);
-        $exists = $stmt->fetchColumn(PDO::FETCH_NUM);
+        $exists = $stmt->fetchColumn();
 
         if ($exists > 0) {
             $response->getBody()->write(json_encode(['error' => 'Ya has calificado este juego']));
@@ -70,15 +70,14 @@ $app->put('/calificacion/{id}', function (Request $request, Response $response, 
 
     // Obtener el user del token desde el middleware
     $user = $request->getAttribute('user');
-    $userId = $user['id']; // Extraer el userId
-    $calificacionId = $args['id'];
+    $userId = (int) ($user['id']); // Extraer el userId
+    $juegoId = (int) ($args['id']);
 
     try {
         // Obtener la calificación actual
-        $stmt = $pdo->prepare("SELECT usuario_id FROM calificacion WHERE id = ?");
-        $stmt->execute([$calificacionId]);
+        $stmt = $pdo->prepare("SELECT * FROM calificacion WHERE juego_id = ? AND usuario_id = ?");
+        $stmt->execute([$juegoId, $userId]);
         $calificacion = $stmt->fetch();
-
         // Verificar si la calificación existe
         if (!$calificacion) {
             return createErrorResponse(404, 'Calificacion no encontrada');
@@ -92,10 +91,9 @@ $app->put('/calificacion/{id}', function (Request $request, Response $response, 
         // Obtener los datos de la solicitud
         $data = $request->getParsedBody();
         $estrellas = $data['estrellas'];
-
         // Actualizar la calificación
-        $stmt = $pdo->prepare("UPDATE calificacion SET estrellas = ? WHERE id = ?");
-        $stmt->execute([$estrellas, $calificacionId]);
+        $stmt = $pdo->prepare("UPDATE calificacion SET estrellas = ? WHERE juego_id = ? AND usuario_id = ?");
+        $stmt->execute([$estrellas, $juegoId, $userId]);
         $response->getBody()->write(json_encode(['status' => 'Calificacion actualizada']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } catch (PDOException $e) {
