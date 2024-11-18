@@ -19,7 +19,7 @@ $app->get('/validar-token', function(Request $request, Response $response) use (
     // Chqueamos si el user esta presente
     if ($user) {
         // Si existe, el token es valido
-        $response->getBody()->write(json_encode(['message' => 'Token valido', 'nombre_usuario' => $user['nombre_usuario'], 'es_admin' => $user['es_admin'], 'vencimiento_token' => $user['vencimiento_token'] ]));
+        $response->getBody()->write(json_encode(['message' => 'Token valido', 'user' => $user['nombre_usuario'], 'es_admin' => $user['es_admin'], 'user_id' => $user['id'], 'token' => $user['token'], 'vencimiento_token' => $user['vencimiento_token'] ]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } else {
         // Token es invalido
